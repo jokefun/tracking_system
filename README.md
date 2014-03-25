@@ -1,4 +1,4 @@
-tracking_system
+tracking system
 ===============
 
 Project for cis542
