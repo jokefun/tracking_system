@@ -17,9 +17,3 @@ Window& Window::operator =(Window&& w)
     window_size = move(w.window_size);
     return *this;
 }
-
-int main()
-{
-    cout << "hello" << endl;
-    return 0;
-}
