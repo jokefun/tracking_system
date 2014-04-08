@@ -10,20 +10,20 @@ using namespace std;
 class Window
 {
 private:
-    deque<int> windowed_data;
+    deque<int> window_data;
     uint window_size;
 
 public:
-    Window(uint w_size): windowed_data(), window_size(w_size) {}
+    Window(uint w_size): window_data(), window_size(w_size) {}
     // default
     Window() { Window(DEFAULT_WINDOW_SIZE); }
     // copy
     Window(const Window& w):
-        windowed_data(w.windowed_data),
+        window_data(w.window_data),
         window_size(w.window_size) {}
     // move
     Window(Window&& w):
-        windowed_data(move(w.windowed_data)),
+        window_data(move(w.window_data)),
         window_size(move(w.window_size)) {}
     ~Window() {}
 
