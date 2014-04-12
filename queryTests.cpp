@@ -45,14 +45,6 @@ double testFunctionNewElementQuery(vector<double>::iterator b, vector<double>::i
     return *e;
 }
 
-double testFunctionTest(vector<double>::iterator b, vector<double>::iterator e)
-{
-    for (vector<double>::iterator i=b; i!=e; i++)
-        cout << *i << " ";
-    cout << endl;
-    return 0;
-}
-
 /*
  * run over examples using query and testFunction
  * to test whether query works as expected
