@@ -45,6 +45,22 @@ double testFunctionNewElementQuery(vector<double>::iterator b, vector<double>::i
     return *e;
 }
 
+double testFunctionAverage(vector<double>::iterator b, vector<double>::iterator e)
+{
+    return *e;
+}
+
+double testFunctionMax(vector<double>::iterator b, vector<double>::iterator e)
+{
+    return *max_element(b, e+1);
+}
+
+double testFunctionMin(vector<double>::iterator b, vector<double>::iterator e)
+{
+    return *min_element(b, e+1);
+}
+
+
 /*
  * run over examples using query and testFunction
  * to test whether query works as expected
@@ -85,7 +101,7 @@ int main()
 
     NewElementQuery<double> neq;
 
-    if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionNewElementQuery))
+    if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionMax))
     {
         cout << "test failed\n";
     }
