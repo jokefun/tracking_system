@@ -84,12 +84,12 @@ bool doTest(vector<double>& examples, int window_size,
 int main()
 {
     /* Query<double>* query[3]; */
-    const int count=10;
-    const int window_size=5;
+    const int count=10000;
+    const int window_size=500;
 
     vector<double> examples;
     populateRandomExample(examples, count);
-    print(examples);
+    /* print(examples); */
 
     NewElementQuery<double> neq;
 
