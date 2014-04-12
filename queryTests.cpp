@@ -47,7 +47,7 @@ double testFunctionNewElementQuery(vector<double>::iterator b, vector<double>::i
 
 double testFunctionAverage(vector<double>::iterator b, vector<double>::iterator e)
 {
-    return *e;
+    return accumulate(b, e+1, 0.0) / (distance(b,e) + 1);
 }
 
 double testFunctionMax(vector<double>::iterator b, vector<double>::iterator e)
@@ -101,7 +101,8 @@ int main()
 
     NewElementQuery<double> neq;
 
-    if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionMax))
+    /* if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionMax)) */
+    if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionAverage))
     {
         cout << "test failed\n";
     }
