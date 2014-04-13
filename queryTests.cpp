@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "query.h"
-#include "newElementQuery.h"
+#include "maxQuery.h"
 
 using namespace std;
 
@@ -13,8 +13,9 @@ void print(const vector<double>& v)
     vector<double>::const_iterator i;
     for (i = v.begin(); i != v.end(); ++i)
     {
-        cout << *i << endl;
+        cout << *i << " ";
     }
+    cout << endl;
 }
 
 /*
@@ -74,8 +75,9 @@ bool doTest(vector<double>& examples, int window_size,
     for (vector<double>::iterator i=examples.begin(); i!=examples.end(); ++i)
     {
         double fromQuery = query->update_with_new_value(*i);
+        /* cout << *i << ", " << fromQuery << endl; */
 
-        vector<double>::iterator b = i-window_size;
+        vector<double>::iterator b = i-window_size+1;
         if (distance(examples.begin(), b) < 0)
             b = examples.begin();
         double fromTestFunc = (*testFunction)(b, i);
@@ -83,7 +85,8 @@ bool doTest(vector<double>& examples, int window_size,
         if (fromQuery != fromTestFunc)
         {
             printWhenTestError(b,i,fromQuery,fromTestFunc);
-            return false;
+            /* return false; */
+            cout << "false\n";
         }
     }
     return true;
@@ -92,17 +95,17 @@ bool doTest(vector<double>& examples, int window_size,
 int main()
 {
     /* Query<double>* query[3]; */
-    const int count=10000;
-    const int window_size=500;
+    const int count=20;
+    const int window_size=4;
 
     vector<double> examples;
     populateRandomExample(examples, count);
-    /* print(examples); */
+    print(examples);
 
-    NewElementQuery<double> neq;
+    MaxQuery<double> query;
 
-    /* if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionMax)) */
-    if (!doTest(examples, window_size, (Query<double>*)&neq, &testFunctionAverage))
+    if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
+    /* if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage)) */
     {
         cout << "test failed\n";
     }
