@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <numeric>
 
 #include "query.h"
 #include "maxQuery.h"
