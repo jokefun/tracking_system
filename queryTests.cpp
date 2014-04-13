@@ -79,9 +79,13 @@ bool doTest(vector<double>& examples, int window_size,
         double fromQuery = query->update_with_new_value(*i);
         /* cout << *i << ", " << fromQuery << endl; */
 
-        vector<double>::iterator b = i-window_size+1;
-        if (distance(examples.begin(), b) < 0)
+        vector<double>::iterator b; // = i-window_size+1;
+        if (distance(examples.begin(), i) < window_size)
             b = examples.begin();
+		else
+		{
+			b = i-window_size+1;
+		}
         double fromTestFunc = (*testFunction)(b, i);
 
         if (fromQuery != fromTestFunc)
@@ -104,7 +108,7 @@ int main()
     populateRandomExample(examples, count);
     print(examples);
 
-    MaxQuery<double> query;
+    MaxQuery<double> query(window_size);
 
     if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
     /* if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage)) */
