@@ -1,5 +1,5 @@
-#ifndef MAXQUERY_H_H
-#define MAXQUERY_H_H
+#ifndef AVERAGEQUERY_H_H
+#define AVERAGEQUERY_H_H
 
 #include "query.h"
 #include <deque>
@@ -58,7 +58,8 @@ int AverageQuery<T>::addDataToWindow(T newData)
 
     if(curDataWindow.size() >= windowWidth)
     {
-        windowSum -= curDataWindow.pop_front();
+        windowSum -= curDataWindow.front();
+        curDataWindow.pop_front();
         curDataWindow.push_back(newData);
         windowSum += newData;
     }

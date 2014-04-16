@@ -6,6 +6,9 @@
 
 #include "query.h"
 #include "maxQuery.h"
+#include "averageQuery.h"
+
+#define EPSILON_DOUBLE 0.00001
 
 using namespace std;
 
@@ -77,22 +80,20 @@ bool doTest(vector<double>& examples, int window_size,
     for (vector<double>::iterator i=examples.begin(); i!=examples.end(); ++i)
     {
         double fromQuery = query->update_with_new_value(*i);
-        /* cout << *i << ", " << fromQuery << endl; */
 
         vector<double>::iterator b; // = i-window_size+1;
         if (distance(examples.begin(), i) < window_size)
             b = examples.begin();
-		else
-		{
-			b = i-window_size+1;
-		}
+        else
+        {
+            b = i-window_size+1;
+        }
         double fromTestFunc = (*testFunction)(b, i);
 
-        if (fromQuery != fromTestFunc)
+        if (abs(fromQuery-fromTestFunc) > EPSILON_DOUBLE)
         {
             printWhenTestError(b,i,fromQuery,fromTestFunc);
-            /* return false; */
-            cout << "false\n";
+            return false;
         }
     }
     return true;
@@ -108,10 +109,11 @@ int main()
     populateRandomExample(examples, count);
     print(examples);
 
-    MaxQuery<double> query(window_size);
+    /* MaxQuery<double> query(window_size); */
+    AverageQuery<double> query(window_size);
 
-    if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
-    /* if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage)) */
+    /* if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax)) */
+    if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage))
     {
         cout << "test failed\n";
     }
