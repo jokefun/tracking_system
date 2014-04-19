@@ -6,10 +6,12 @@
 
 const int WINDOW_WIDTH = 50;
 
+// You should try to document the requirements on class T
 template <class T>
 class AverageQuery:public Query<T>
 {
 private:
+	// This sum might overflow, right? How can you do the computation to guarantee the absence of overlow?
     T windowSum;
     int dataCnt;
     int windowWidth;

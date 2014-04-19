@@ -1,3 +1,6 @@
+// every reasonable C++ compiler (including all C++11 compilers) support #pragma once, which is 
+// a cleaner alternative to an include guard
+
 #ifndef QUERY_DEFINATION
 #define QUERY_DEFINATION
 

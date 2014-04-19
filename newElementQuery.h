@@ -2,7 +2,7 @@
 #define NEWELEMENTQUERY_DEFINATION
 
 #include "query.h"
-
+// not sure why this type of query is useful
 template <typename T>
 class NewElementQuery : public Query<T>
 {
