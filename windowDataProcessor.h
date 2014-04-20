@@ -17,7 +17,7 @@ class WindowDataProcessor
         size_t window_size;
         // TODO storage
 
-        vector<unique_ptr<Query<double> > > queries;
+        vector<shared_ptr<Query<double> > > queries;
 
         /* temp statistics */
         vector<double> lastValues;
@@ -40,6 +40,16 @@ class WindowDataProcessor
     public:
         WindowDataProcessor(size_t w_size);
         WindowDataProcessor() { WindowDataProcessor(DEFAULT_WINDOW_SIZE); }
+        // copy
+        WindowDataProcessor(const WindowDataProcessor& wdp) :
+            window_size(wdp.window_size),
+            queries(wdp.queries),
+            lastValues(wdp.lastValues) {}
+        // move
+        WindowDataProcessor(WindowDataProcessor&& wdp) :
+            window_size(move(wdp.window_size)),
+            queries(move(wdp.queries)),
+            lastValues(move(wdp.lastValues)) {}
 
         ~WindowDataProcessor() {} // release queries
 
