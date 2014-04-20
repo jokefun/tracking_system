@@ -38,7 +38,7 @@ class WindowDataProcessor
         void executeAllQueriesForData(double);
 
     public:
-        WindowDataProcessor(size_t w_size) : window_size(w_size) {}
+        WindowDataProcessor(size_t w_size);
         WindowDataProcessor() { WindowDataProcessor(DEFAULT_WINDOW_SIZE); }
 
         ~WindowDataProcessor() {} // release queries
