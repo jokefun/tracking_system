@@ -53,6 +53,9 @@ class WindowDataProcessor
 
         ~WindowDataProcessor() {} // release queries
 
+        WindowDataProcessor& operator =(const WindowDataProcessor& wdp);
+        WindowDataProcessor& operator =(WindowDataProcessor&& wdp);
+
         void addNewData(double); // new data, as well as new statistics, are added to storage
 
         double getLastAverage();
