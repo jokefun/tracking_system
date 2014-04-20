@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "query.h"
-#include "WindowDataProcessor.h"
+#include "windowDataProcessor.h"
 
 using namespace std;
 
