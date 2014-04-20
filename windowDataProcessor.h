@@ -20,17 +20,23 @@ class WindowDataProcessor
 
         vector< Query<double>* > queries;
 
-
         /* temp statistics */
-        double lastAverage = 0;
-        double lastMax = 0;
-        double lastMin = 0;
+        vector<double> lastValues;
 
         // average handler
         // max handler
         // min handler
 
+    public:
+        enum QueryType
+        {
+            AVERAGE = 0,
+            MAX,
+            MIN,
+            NUM_OF_QUERYTYPES
+        };
 
+    private:
         void initQueries();
         void executeAllQueries();
 
@@ -43,7 +49,7 @@ class WindowDataProcessor
         double addNewDataAndGetAverage(double);
         double addNewDataAndGetMax(double);
         double addNewDataAndGetMin(double);
-        double addNewDataAndGetAll(double);
+        vector<double> addNewDataAndGetAll(double);
 
         double getLastAverage();
         double getLastMax();
