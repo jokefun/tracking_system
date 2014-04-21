@@ -6,6 +6,7 @@
 
 #include "query.h"
 #include "maxQuery.h"
+#include "minQuery.h"
 #include "averageQuery.h"
 
 #define EPSILON_DOUBLE 0.00001
@@ -160,11 +161,22 @@ int main()
 	max_value = 2;
 
      MaxQuery<double> query(window_size, min_value, max_value); 
+	 MinQuery<double> min_query(window_size, min_value, max_value); 
 
  //   AverageQuery<double> query(window_size);
-
+	
+	cout<<"test MaxQuery"<<endl;
 	cout<<"minvalue:"<<min_value<<" maxvalue"<<max_value<<endl;
 	if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
+	{
+		cout << "test failed\n";
+	}
+	else
+	{
+		cout << "test passed\n";
+	}
+	cout<<"test MinQuery"<<endl;
+	if (!doTest(examples, window_size, (Query<double>*)&min_query, &testFunctionMin))
 	{
 		cout << "test failed\n";
 	}
