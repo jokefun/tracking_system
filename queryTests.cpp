@@ -163,6 +163,7 @@ int main()
 
  //   AverageQuery<double> query(window_size);
 
+	cout<<"minvalue:"<<min_value<<" maxvalue"<<max_value<<endl;
 	if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
 	{
 		cout << "test failed\n";
