@@ -23,15 +23,19 @@ class MaxQuery:public Query<T>
 		};
 		int size;
 		int index;
+		T min_value;
+		T max_value;
 		// document your class invariant, i.e. the invariant describing how dataWindow summarizes the data in the window
 		std::deque<myData> dataWindow;
 		// why is this an int instead of a size_t?
 		int windowSize;
 		double addNewData(T data_);
+		bool checkDataValid(T data_);
 		T getCurMax();
 	public:
 		MaxQuery();
 		MaxQuery(int windowSize_);
+		MaxQuery(int windowSize_, int min_value_, int max_value);
 		MaxQuery(const MaxQuery<T>& MQ);
 		MaxQuery(MaxQuery<T>&& MQ);
 		~MaxQuery();
@@ -61,11 +65,24 @@ MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ)
 	dataWindow = MQ.dataWindow;
 }
 
+template<class T>
+bool MaxQuery<T>::checkDataValid(T data_)
+{
+
+	if (data_ <= max_value && data_ >= min_value)
+		return true;	
+	else 
+		return false;
+}
+
+
+
 
 template<class T>
 MaxQuery<T>::~MaxQuery()
 {
-	
+	min_value = std::numeric_limits<T>::lowest();
+	max_value = std::numeric_limits<T>::max();
 }
 
 template<class T>
@@ -82,6 +99,18 @@ MaxQuery<T>::MaxQuery(int windowSize_)
 {
 	size = 0;
 	index = 0;
+	min_value = std::numeric_limits<T>::lowest();
+	max_value = std::numeric_limits<T>::max();
+	windowSize = windowSize_;
+}
+
+template<class T>
+MaxQuery<T>::MaxQuery(int windowSize_, int min_value_, int max_value_)
+{
+	size = 0;
+	index = 0;
+	min_value = min_value_;
+	max_value = max_value_;
 	windowSize = windowSize_;
 }
 
@@ -103,6 +132,8 @@ double MaxQuery<T>::addNewData(T value)
 	data.index = index;
 	if (dataWindow.empty())
 	{
+		if (checkDataValid(value) == false)			//data invalid, no operation
+			return std::numeric_limits<T>::min();
 		dataWindow.push_back(data);
 		return data.value;
 	}
@@ -112,6 +143,10 @@ double MaxQuery<T>::addNewData(T value)
 	// just use the following loop. The special case is the sort
 	// of optimization you should only do if you have reason to 
 	// think it will actually matter.
+
+	if (checkDataValid(value) == false)			//data invalid, no operation
+		return std::numeric_limits<T>::min();
+
 	if (dataWindow.front().value >= data.value)
 	{
 		while (dataWindow.back().value < data.value)
@@ -132,7 +167,12 @@ double MaxQuery<T>::addNewData(T value)
 template<class T>
 T MaxQuery<T>::getCurMax()
 {
-	return dataWindow.front().value;
+	if (!dataWindow.empty())
+		return dataWindow.front().value;
+	else
+	{
+		printf("no data available\n");
+	}
 } 
 
 template<class T>
