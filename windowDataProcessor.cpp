@@ -10,6 +10,22 @@ WindowDataProcessor::WindowDataProcessor(size_t w_size)
     initQueries();
 }
 
+WindowDataProcessor& WindowDataProcessor::operator =(const WindowDataProcessor& wdp)
+{
+    window_size = wdp.window_size;
+    queries = wdp.queries;
+    lastValues = wdp.lastValues;
+    return *this;
+}
+
+WindowDataProcessor& WindowDataProcessor::operator =(WindowDataProcessor&& wdp)
+{
+    window_size = move(wdp.window_size);
+    queries = move(wdp.queries);
+    lastValues = move(wdp.lastValues);
+    return *this;
+}
+
 void WindowDataProcessor::initQueries()
 {
     // average
