@@ -6,9 +6,13 @@
 
 #include "query.h"
 #include "maxQuery.h"
+#include "minQuery.h"
 #include "averageQuery.h"
 
 #define EPSILON_DOUBLE 0.00001
+
+double max_value;
+double min_value;
 
 using namespace std;
 
@@ -46,24 +50,48 @@ void printWhenTestError(vector<double>::iterator b, vector<double>::iterator e,
     cout << "\ntestF result: " << fromTestFunc << endl;
 }
 
-double testFunctionNewElementQuery(vector<double>::iterator b, vector<double>::iterator e)
+double testFunctionNewElementQuery(vector<double>::iterator b, vector<double>::iterator e, double min_value, double max_value)
 {
     return *e;
 }
 
-double testFunctionAverage(vector<double>::iterator b, vector<double>::iterator e)
+double testFunctionAverage(vector<double>::iterator b, vector<double>::iterator e, double min_value, double max_value)
 {
     return accumulate(b, e+1, 0.0) / (distance(b,e) + 1);
 }
 
-double testFunctionMax(vector<double>::iterator b, vector<double>::iterator e)
+double testFunctionMax(vector<double>::iterator b, vector<double>::iterator e, double min_value, double max_value)
 {
-    return *max_element(b, e+1);
+	vector<double>::iterator it;
+    double max = std::numeric_limits< double >::lowest();
+	
+	
+	for (it = b; it <= e; it++)
+	{
+		if (*it > max_value || *it < min_value)
+			continue;
+		if (*it > max)
+		{
+			max = *it;
+		}
+	}
+	return max;
 }
 
-double testFunctionMin(vector<double>::iterator b, vector<double>::iterator e)
+double testFunctionMin(vector<double>::iterator b, vector<double>::iterator e, double min_value, double max_value)
 {
-    return *min_element(b, e+1);
+	double min = std::numeric_limits< double >::max();
+	vector<double>::iterator it;
+	for (it = b; it <= e; it++)
+	{
+		if (*it > max_value || *it < min_value)
+			continue;
+		if (*it < min)
+		{
+			min = *it;
+		}
+	}
+	return min;
 }
 
 
@@ -73,14 +101,14 @@ double testFunctionMin(vector<double>::iterator b, vector<double>::iterator e)
  */
 bool doTest(vector<double>& examples, int window_size,
         Query<double>* query,
-        double (*testFunction)(vector<double>::iterator, vector<double>::iterator)) // query and function needed
+        double (*testFunction)(vector<double>::iterator, vector<double>::iterator, double min_value, double max_value)) // query and function needed
 {
     if (!query) return false;
 
     for (vector<double>::iterator i=examples.begin(); i!=examples.end(); ++i)
     {
         double fromQuery = query->update_with_new_value(*i);
-
+		cout << fromQuery << " ";
         vector<double>::iterator b; // = i-window_size+1;
         if (distance(examples.begin(), i) < window_size)
             b = examples.begin();
@@ -88,7 +116,7 @@ bool doTest(vector<double>& examples, int window_size,
         {
             b = i-window_size+1;
         }
-        double fromTestFunc = (*testFunction)(b, i);
+        double fromTestFunc = (*testFunction)(b, i, min_value, max_value);
 
         if (abs(fromQuery-fromTestFunc) > EPSILON_DOUBLE)
         {
@@ -99,6 +127,25 @@ bool doTest(vector<double>& examples, int window_size,
     return true;
 }
 
+
+
+void testData1(vector<double> &examples)
+{
+	examples.push_back(-3);
+	examples.push_back(-1);
+	examples.push_back(-2);
+	examples.push_back(-1.5);
+	examples.push_back(-1.51);
+	examples.push_back(10);
+	examples.push_back(1.1);
+	examples.push_back(1.2);
+	examples.push_back(0.9);
+	examples.push_back(0.8);
+	examples.push_back(0.7);
+	examples.push_back(0.6);
+}
+
+
 int main()
 {
     /* Query<double>* query[3]; */
@@ -106,13 +153,38 @@ int main()
     const int window_size=4;
 
     vector<double> examples;
-    populateRandomExample(examples, count);
+//    populateRandomExample(examples, count);
+	testData1(examples);
     print(examples);
 
-    /* MaxQuery<double> query(window_size); */
-    AverageQuery<double> query(window_size);
+	min_value = -2;
+	max_value = 2;
 
-    /* if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax)) */
+     MaxQuery<double> query(window_size, min_value, max_value); 
+	 MinQuery<double> min_query(window_size, min_value, max_value); 
+
+ //   AverageQuery<double> query(window_size);
+	
+	cout<<"test MaxQuery"<<endl;
+	cout<<"minvalue:"<<min_value<<" maxvalue"<<max_value<<endl;
+	if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
+	{
+		cout << "test failed\n";
+	}
+	else
+	{
+		cout << "test passed\n";
+	}
+	cout<<"test MinQuery"<<endl;
+	if (!doTest(examples, window_size, (Query<double>*)&min_query, &testFunctionMin))
+	{
+		cout << "test failed\n";
+	}
+	else
+	{
+		cout << "test passed\n";
+	}
+	/*
     if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage))
     {
         cout << "test failed\n";
@@ -121,7 +193,8 @@ int main()
     {
         cout << "test passed\n";
     }
-
+	*/
     return 0;
 }
+
 
