@@ -35,17 +35,16 @@ DataStorage& DataStorage::operator =(DataStorage&& d)
     return *this;
 }
 
+void DataStorage::addNewData(vector<double> d)
+{
+    chrono::system_clock::time_point tp = chrono::system_clock::now();
+    addNewData(d, tp);
+}
+
 void DataStorage::addNewData(vector<double> d, time_point t)
 {
-    printV(d);
-    cout << current_window.size() << endl;
-
     // may need to lock here for multi thread, so all data are sorted by time
     current_window.push_back(DataWithTime(d, t));
-    cout << current_window.back().timestamp.time_since_epoch().count() << endl;
-
-    cout << current_window.size() << endl;
-    cout << current_window.front().data.size() << endl;
 
     if (current_window.size() > window_size)
     {

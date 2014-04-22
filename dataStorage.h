@@ -68,12 +68,13 @@ class DataStorage
         DataStorage& operator =(DataStorage&& d);
 
         // interfaces
-        void addNewData(vector<double> d, time_point t);
+        void addNewData(vector<double> d);
         vector<vector<double> > retrieveData(string start, string end);
         vector<vector<double> > retrieveData(time_point s, time_point e);
 
     private:
         time_point stringToTimePoint(string ts);
+        void addNewData(vector<double> d, time_point t);
 
         /* bool dataInMemory(time_point s, time_point e); // return true is all in memory */
 };
