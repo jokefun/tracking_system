@@ -5,9 +5,12 @@
 #include <limits>
 #include "query.h"
 
+using namespace std;
+
 const int WINDOW_WIDTH = 500;
-const double UPPERBOUND numeric_limits<double>::max();
-const double LOWERBOUND numeric_limits<double>::lowest();
+const double UPPERBOUND = numeric_limits<double>::max();
+const double LOWERBOUND = numeric_limits<double>::lowest();
+
 
 template <class T>
 class AverageQuery:public Query<T>
@@ -72,14 +75,14 @@ int AverageQuery<T>::addDataToWindow(T newData)
 {
     if(curDataWindow.size() >= windowWidth)
     {
-        if (curDataWindow.front() >= lowerBound) && (curDataWindow.front() <= upperBound)
+        if ((curDataWindow.front() >= lowerBound) && (curDataWindow.front() <= upperBound))
         {
             windowSum -= curDataWindow.front();
             dataCnt -= 1;
         }
         curDataWindow.pop_front();
         curDataWindow.push_back(newData);
-        if (newData >= lowerBound) && (newData <= upperBound)
+        if ((newData >= lowerBound) && (newData <= upperBound))
         {
             windowSum += newData;
             dataCnt += 1;
@@ -88,7 +91,7 @@ int AverageQuery<T>::addDataToWindow(T newData)
     else
     {
         curDataWindow.push_back(newData);
-        if (newData >= lowerBound) && (newData <= upperBound)
+        if ((newData >= lowerBound) && (newData <= upperBound))
         {
             windowSum += newData;
             dataCnt += 1;
@@ -101,7 +104,7 @@ int AverageQuery<T>::addDataToWindow(T newData)
 template<class T>
 T AverageQuery<T>::getAverage()
 {
-    if dataCnt >= 1
+    if (dataCnt >= 1)
     {
         T ave = windowSum/dataCnt;
         return ave;
