@@ -17,9 +17,13 @@ using namespace std;
 
 typedef chrono::system_clock::time_point time_point;
 
+/*
+ * A storage supporting query for data given time period
+ */
 class DataStorage
 {
     private:
+        // inner struct type for use
         struct DataWithTime
         {
             vector<double> data;
@@ -34,6 +38,7 @@ class DataStorage
             ~DataWithTime() {}
         };
 
+        // member variables
         size_t window_size;
         size_t number_statistics;
         vector<DataWithTime> current_window;
@@ -68,15 +73,20 @@ class DataStorage
         DataStorage& operator =(DataStorage&& d);
 
         // interfaces
+        /*
+         * call to add new datas into storage
+         */
         void addNewData(vector<double> d);
+        /*
+         * call to retrive data given time period
+         * input can be string or time struct
+         */
         vector<vector<double> > retrieveData(string start, string end);
         vector<vector<double> > retrieveData(time_point s, time_point e);
 
     private:
         time_point stringToTimePoint(string ts);
         void addNewData(vector<double> d, time_point t);
-
-        /* bool dataInMemory(time_point s, time_point e); // return true is all in memory */
 };
 
 

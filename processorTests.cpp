@@ -114,6 +114,8 @@ int main()
 
     WindowDataProcessor p(window_size);
 
+    chrono::system_clock::time_point tp1 = chrono::system_clock::now();
+
     if (!doTest(examples, window_size, p))
     {
         cout << "test failed\n";
@@ -121,6 +123,17 @@ int main()
     else
     {
         cout << "test passed\n";
+    }
+
+    chrono::system_clock::time_point tp2 = chrono::system_clock::now();
+
+    vector<vector<double> > r = p.retrieveData(tp1, tp2);
+    cout << r.size() << endl;
+    for (vector<vector<double> >:: iterator i = r.begin(); i!=r.end(); i++)
+    {
+        for (vector<double>::iterator ii=(*i).begin(); ii!=(*i).end(); ii++)
+            cout << *ii << ", ";
+        cout << endl;
     }
 
     return 0;

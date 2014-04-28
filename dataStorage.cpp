@@ -5,18 +5,6 @@
 
 using namespace std;
 
-void printV(vector<double> v)
-{
-     cout << endl;
-     cout << endl;
-     for (vector<double>::iterator i = v.begin(); i != v.end(); i++)
-     {
-         cout << *i << ", ";
-     }
-     cout << endl;
-     cout << endl;
-}
-
 DataStorage& DataStorage::operator =(const DataStorage& d)
 {
     window_size = d.window_size;
@@ -37,15 +25,26 @@ DataStorage& DataStorage::operator =(DataStorage&& d)
 
 void DataStorage::addNewData(vector<double> d)
 {
+    /*
+     * construct a new struct {time::now(), d}
+     * add to storage
+     */
     chrono::system_clock::time_point tp = chrono::system_clock::now();
     addNewData(d, tp);
 }
 
 void DataStorage::addNewData(vector<double> d, time_point t)
 {
+    /*
+     * construct a new struct {time::now(), d}
+     * add to storage
+     */
     // may need to lock here for multi thread, so all data are sorted by time
     current_window.push_back(DataWithTime(d, t));
 
+    /*
+     * invariant: current_window.size <= window_size
+     */
     if (current_window.size() > window_size)
     {
         write_buffer_database.push_back(current_window.front());
@@ -64,6 +63,10 @@ void DataStorage::addNewData(vector<double> d, time_point t)
 
 vector<vector<double> > DataStorage::retrieveData(string start, string end)
 {
+    /*
+     * parse time strings
+     * query and return data
+     */
     time_point s = stringToTimePoint(start);
     time_point e = stringToTimePoint(end);
     return retrieveData(s, e);
@@ -71,6 +74,10 @@ vector<vector<double> > DataStorage::retrieveData(string start, string end)
 
 vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
 {
+    /*
+     * search in both the window and the buffer for data between
+     * s and e, return retrieved data
+     */
     vector<vector<double> > retriveResult;
 
     if (s >= e) return retriveResult;
@@ -105,8 +112,6 @@ vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
             retriveResult.push_back((*i).data);
     }
 
-    // if start and end are inside the memory
-    // copy data from window and return
     // if part of start and end is outsize of memory
     // query in database and return
 

@@ -6,26 +6,29 @@
 #include <vector>
 
 #include "query.h"
+#include "dataStorage.h"
 
-#define DEFAULT_WINDOW_SIZE 500
+#define DEFAULT_WINDOW_SIZE_PROCESSOR 500
 
 using namespace std;
 
+/*
+ * Processor is a wrapper for all kind of queries
+ * Can be init with given window size
+ * Will execute all queries at once when given a new data
+ */
 class WindowDataProcessor
 {
     private:
         size_t window_size;
-        // TODO storage
 
+        // all queries
         vector<shared_ptr<Query<double> > > queries;
 
-        /* temp statistics */
+        // temp statistics
+        double lastInput;
         vector<double> lastValues;
 
-        // average handler
-        // max handler
-
-    public:
         enum QueryType
         {
             AVERAGE = 0,
@@ -33,22 +36,29 @@ class WindowDataProcessor
             NUM_OF_QUERYTYPES
         };
 
+        // storage
+        DataStorage ds;
+
     private:
         void initQueries();
         void executeAllQueriesForData(double);
 
     public:
         WindowDataProcessor(size_t w_size);
-        WindowDataProcessor() { WindowDataProcessor(DEFAULT_WINDOW_SIZE); }
+        WindowDataProcessor() { WindowDataProcessor(DEFAULT_WINDOW_SIZE_PROCESSOR); }
         // copy
         WindowDataProcessor(const WindowDataProcessor& wdp) :
             window_size(wdp.window_size),
+            ds(window_size, NUM_OF_QUERYTYPES),
             queries(wdp.queries),
+            lastInput(wdp.lastInput),
             lastValues(wdp.lastValues) {}
         // move
         WindowDataProcessor(WindowDataProcessor&& wdp) :
             window_size(move(wdp.window_size)),
+            ds(window_size, NUM_OF_QUERYTYPES),
             queries(move(wdp.queries)),
+            lastInput(move(wdp.lastInput)),
             lastValues(move(wdp.lastValues)) {}
 
         ~WindowDataProcessor() {} // release queries
@@ -56,18 +66,30 @@ class WindowDataProcessor
         WindowDataProcessor& operator =(const WindowDataProcessor& wdp);
         WindowDataProcessor& operator =(WindowDataProcessor&& wdp);
 
+        /*
+         * call to feed processor with new data
+         * all queries will be executed
+         */
         void addNewData(double); // new data, as well as new statistics, are added to storage
 
+        /*
+         * call to get the results for last input data
+         */
         double getLastAverage();
         double getLastMax();
         vector<double> getLastAll();
 
+        /*
+         * call to add new data and get corresponding result as well
+         */
         double addNewDataAndGetAverage(double);
         double addNewDataAndGetMax(double);
         vector<double> addNewDataAndGetAll(double);
 
-        // set handler for statistics
-        // void setHandlerForAverage();
-        // void setHandlerForMax();
+        /*
+         * query in data storage for datas in given period
+         */
+        vector<vector<double> > retrieveData(string start, string end);
+        vector<vector<double> > retrieveData(time_point s, time_point e);
 };
 #endif
