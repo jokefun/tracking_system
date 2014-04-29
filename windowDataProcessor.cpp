@@ -1,5 +1,6 @@
 #include "windowDataProcessor.h"
 #include "maxQuery.h"
+#include "minQuery.h"
 #include "averageQuery.h"
 
 using namespace std;
@@ -46,6 +47,8 @@ void WindowDataProcessor::initQueries()
     queries.push_back(unique_ptr<Query<double> >(new MaxQuery<double>(window_size)));
     lastValues.push_back(0);
     // min
+    queries.push_back(unique_ptr<Query<double> >(new MinQuery<double>(window_size)));
+    lastValues.push_back(0);
     // maybe more
 }
 
@@ -82,6 +85,11 @@ double WindowDataProcessor::getLastMax()
     return lastValues[MAX];
 }
 
+double WindowDataProcessor::getLastMin()
+{
+    return lastValues[MIN];
+}
+
 vector<double> WindowDataProcessor::getLastAll()
 {
     return lastValues;
@@ -97,6 +105,12 @@ double WindowDataProcessor::addNewDataAndGetMax(double v)
 {
     executeAllQueriesForData(v);
     return lastValues[MAX];
+}
+
+double WindowDataProcessor::addNewDataAndGetMin(double v)
+{
+    executeAllQueriesForData(v);
+    return lastValues[MIN];
 }
 
 vector<double> WindowDataProcessor::addNewDataAndGetAll(double v)

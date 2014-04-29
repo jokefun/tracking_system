@@ -98,6 +98,13 @@ bool doTest(vector<double>& examples, int window_size,
             printWhenTestError("Error in max --- ",b,i,processor.getLastMax(),fromTestFuncMax);
             return false;
         }
+
+        double fromTestFuncMin = testFunctionMin(b, i);
+        if (abs(processor.getLastMin()-fromTestFuncMin) > EPSILON_DOUBLE)
+        {
+            printWhenTestError("Error in min --- ",b,i,processor.getLastMin(),fromTestFuncMin);
+            return false;
+        }
     }
     return true;
 }

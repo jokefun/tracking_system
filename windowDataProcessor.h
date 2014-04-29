@@ -33,6 +33,7 @@ class WindowDataProcessor
         {
             AVERAGE = 0,
             MAX,
+            MIN,
             NUM_OF_QUERYTYPES
         };
 
@@ -77,6 +78,7 @@ class WindowDataProcessor
          */
         double getLastAverage();
         double getLastMax();
+        double getLastMin();
         vector<double> getLastAll();
 
         /*
@@ -84,6 +86,7 @@ class WindowDataProcessor
          */
         double addNewDataAndGetAverage(double);
         double addNewDataAndGetMax(double);
+        double addNewDataAndGetMin(double);
         vector<double> addNewDataAndGetAll(double);
 
         /*
