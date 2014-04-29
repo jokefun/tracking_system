@@ -22,13 +22,13 @@ class MinQuery:public Query<T>
 		T max_value;
 		std::deque<myData> dataWindow;
 		int windowSize;
-		double addNewData(T data_);
+		T addNewData(T data_);
 		bool checkDataValid(T data_);
 		T getCurMin();
 	public:
 		MinQuery();
 		MinQuery(int windowSize_);
-		MinQuery(int windowSize_, int min_value_, int max_value);
+		MinQuery(int windowSize_, T min_value_, T max_value);
 		MinQuery(const MinQuery<T>& MQ);
 		MinQuery(MinQuery<T>&& MQ);
 		~MinQuery();
@@ -54,7 +54,7 @@ MinQuery<T>::MinQuery(MinQuery<T>&& MQ)
 	size = MQ.size;
 	index = MQ.index;
 	windowSize = MQ.windowSize;
-	dataWindow = MQ.dataWindow;
+	dataWindow = std::(MQ.dataWindow);
 }
 
 template<class T>
@@ -97,7 +97,7 @@ MinQuery<T>::MinQuery(int windowSize_)
 }
 
 template<class T>
-MinQuery<T>::MinQuery(int windowSize_, int min_value_, int max_value_)
+MinQuery<T>::MinQuery(int windowSize_, T min_value_, T max_value_)
 {
 	size = 0;
 	index = 0;
@@ -115,7 +115,7 @@ MinQuery<T>::MinQuery()
 }
 
 template<class T>
-double MinQuery<T>::addNewData(T value)
+T MinQuery<T>::addNewData(T value)
 {
 	index++;
 	struct myData data;

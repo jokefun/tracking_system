@@ -22,13 +22,13 @@ class MaxQuery:public Query<T>
 		T max_value;
 		std::deque<myData> dataWindow;
 		int windowSize;
-		double addNewData(T data_);
+		T addNewData(T data_);
 		bool checkDataValid(T data_);
 		T getCurMax();
 	public:
 		MaxQuery();
 		MaxQuery(int windowSize_);
-		MaxQuery(int windowSize_, int min_value_, int max_value);
+		MaxQuery(int windowSize_, T min_value_, T max_value);
 		MaxQuery(const MaxQuery<T>& MQ);
 		MaxQuery(MaxQuery<T>&& MQ);
 		~MaxQuery();
@@ -54,7 +54,7 @@ MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ)
 	size = MQ.size;
 	index = MQ.index;
 	windowSize = MQ.windowSize;
-	dataWindow = MQ.dataWindow;
+	dataWindow = std::move(MQ.dataWindow);
 }
 
 template<class T>
@@ -97,7 +97,7 @@ MaxQuery<T>::MaxQuery(int windowSize_)
 }
 
 template<class T>
-MaxQuery<T>::MaxQuery(int windowSize_, int min_value_, int max_value_)
+MaxQuery<T>::MaxQuery(int windowSize_, T min_value_, T max_value_)
 {
 	size = 0;
 	index = 0;
@@ -115,7 +115,7 @@ MaxQuery<T>::MaxQuery()
 }
 
 template<class T>
-double MaxQuery<T>::addNewData(T value)
+T MaxQuery<T>::addNewData(T value)
 {
 	index++;
 	struct myData data;
@@ -124,7 +124,7 @@ double MaxQuery<T>::addNewData(T value)
 	if (dataWindow.empty())
 	{
 		if (checkDataValid(value) == false)			//data invalid, no operation
-			return std::numeric_limits<T>::min();
+			return std::numeric_limits<T>::lowest();
 		dataWindow.push_back(data);
 		return data.value;
 	}
@@ -132,7 +132,7 @@ double MaxQuery<T>::addNewData(T value)
 		dataWindow.pop_front();		// out of date
 
 	if (checkDataValid(value) == false)			//data invalid, no operation
-		return std::numeric_limits<T>::min();
+		return std::numeric_limits<T>::lowest();
 
 	if (dataWindow.front().value >= data.value)
 	{
@@ -159,6 +159,7 @@ T MaxQuery<T>::getCurMax()
 	else
 	{
 		printf("no data available\n");
+		return numeric_limits<T>::lowest();
 	}
 } 
 
