@@ -11,8 +11,8 @@
 
 #define EPSILON_DOUBLE 0.00001
 
-double max_value;
-double min_value;
+double max_value = std::numeric_limits< double >::max();
+double min_value = std::numeric_limits< double >::lowest();
 
 using namespace std;
 
@@ -150,23 +150,33 @@ int main()
 {
     /* Query<double>* query[3]; */
     const int count=20;
-    const int window_size=4;
+    const int window_size=3;
 
     vector<double> examples;
 //    populateRandomExample(examples, count);
 	testData1(examples);
     print(examples);
 
-	min_value = -2;
-	max_value = 2;
 
-     MaxQuery<double> query(window_size, min_value, max_value); 
-	 MinQuery<double> min_query(window_size, min_value, max_value); 
+
+ //    MaxQuery<double> query(window_size, min_value, max_value); 
+//	 MinQuery<double> min_query(window_size, min_value, max_value); 
+
+	 MaxQuery<double> query(window_size); 
+	 MinQuery<double> min_query(window_size); 
 
  //   AverageQuery<double> query(window_size);
 	
-	cout<<"test MaxQuery"<<endl;
+	
+
+
+	
+
+
+
+	cout<<"window size"<<window_size<<endl;
 	cout<<"minvalue:"<<min_value<<" maxvalue"<<max_value<<endl;
+	cout<<"test MaxQuery"<<endl;
 	if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
 	{
 		cout << "test failed\n";
@@ -184,6 +194,9 @@ int main()
 	{
 		cout << "test passed\n";
 	}
+
+//	MaxQuery<double> querytest(std::move(query));
+
 	/*
     if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage))
     {

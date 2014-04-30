@@ -4,8 +4,21 @@
 #include "query.h"
 #include <deque>          // std::queue
 
-
+//default window size, if not specified
 const int MINQUERY_WINDOWSIZE = 500;	
+
+
+/*
+this class has one public method for client, update_with_new_value()
+client only need to provide data for this method and then a current 
+minimum value in the sliding window will be returned. 
+
+MinQuery();		using default settings
+MinQuery(int windowSize_);		specify window size
+MinQuery(int windowSize_, T min_value_, T max_value);	specify window size/ min valid value and max valid value for data
+
+time complexity: o(1) insert, o(1) query maximum in average.
+*/
 
 template <class T>
 class MinQuery:public Query<T>

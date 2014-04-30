@@ -4,9 +4,22 @@
 #include "query.h"
 #include <deque>          // std::queue
 
-
+//default window size, if not specified
 const int WINDOWSIZE = 500;
 
+
+/*
+this class has one public method for client, update_with_new_value()
+client only need to provide data for this method and then a current 
+maximum value in the sliding window will be returned. 
+
+
+MaxQuery();		using default settings
+MaxQuery(int windowSize_);		specify window size
+MaxQuery(int windowSize_, T min_value_, T max_value);	specify window size/ min valid value and max valid value for data
+
+time complexity: o(1) insert, o(1) query maximum in average.
+*/
 template <class T>
 class MaxQuery:public Query<T>
 {
@@ -27,7 +40,7 @@ class MaxQuery:public Query<T>
 		T getCurMax();
 	public:
 		MaxQuery();
-		MaxQuery(int windowSize_);
+		MaxQuery(int windowSize_);		
 		MaxQuery(int windowSize_, T min_value_, T max_value);
 		MaxQuery(const MaxQuery<T>& MQ);
 		MaxQuery(MaxQuery<T>&& MQ);
@@ -82,14 +95,18 @@ MaxQuery<T>::MaxQuery(const MaxQuery<T>& MQ)
 }
 
 template<class T>
-MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ)
+MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ):
+size(MQ.size),index(MQ.index),min_value(MQ.min_value),max_value(MQ.max_value),windowSize(MQ.windowSize),dataWindow(std::move(MQ.dataWindow))
 {
+//	cout<<"move constructor"<<endl;
+	/*
 	size = MQ.size;
 	index = MQ.index;
 	min_value = MQ.min_value;
 	max_value = MQ.max_value;
 	windowSize = MQ.windowSize;
 	dataWindow = std::move(MQ.dataWindow);
+	*/
 }
 
 
