@@ -86,8 +86,7 @@ bool MinQuery<T>::checkDataValid(T data_)
 template<class T>
 MinQuery<T>::~MinQuery()
 {
-	min_value = std::numeric_limits<T>::lowest();
-	max_value = std::numeric_limits<T>::max();
+
 }
 
 template<class T>
