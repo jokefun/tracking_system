@@ -5,7 +5,7 @@
 #include <deque>          // std::queue
 
 
-const int MINQUERY_WINDOWSIZE = 500;
+const int MINQUERY_WINDOWSIZE = 500;	
 
 template <class T>
 class MinQuery:public Query<T>
@@ -32,7 +32,7 @@ class MinQuery:public Query<T>
 		MinQuery(const MinQuery<T>& MQ);
 		MinQuery(MinQuery<T>&& MQ);
 		~MinQuery();
-		T update_with_new_value(T data);
+		T update_with_new_value(T data);		// add a new data to current data window, and update the minimum value of the window
 		MinQuery & operator=(const MinQuery &);
 
 };
@@ -117,10 +117,13 @@ MinQuery<T>::MinQuery()
 template<class T>
 T MinQuery<T>::addNewData(T value)
 {
-	index++;
+//	index++;
 	struct myData data;
 	data.value = value;
 	data.index = index;
+	int expiredIndex = index;
+	index = (index+1)%windowSize;   //circular index, avoid overflow
+
 	if (dataWindow.empty())
 	{
 		if (checkDataValid(value) == false)			//data invalid, no operation
@@ -128,7 +131,7 @@ T MinQuery<T>::addNewData(T value)
 		dataWindow.push_back(data);					//if empty window, push data directly
 		return data.value;
 	}
-	if (dataWindow.front().index <= data.index - windowSize)	
+	if (dataWindow.front().index == expiredIndex)	
 		dataWindow.pop_front();		// out of date
 
 	if (checkDataValid(value) == false)			//data invalid, no operation

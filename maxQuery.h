@@ -32,59 +32,22 @@ class MaxQuery:public Query<T>
 		MaxQuery(const MaxQuery<T>& MQ);
 		MaxQuery(MaxQuery<T>&& MQ);
 		~MaxQuery();
-		T update_with_new_value(T data);
+		T update_with_new_value(T data);		//add a new data to current data window, and update the maximum value of the window
 		MaxQuery & operator=(const MaxQuery &);
 
 };
 
-template<class T>
-MaxQuery<T> & MaxQuery<T>:: operator=(const MaxQuery &MQ)
-{
-	size = MQ.size;
-	index = MQ.index;
-	windowSize = MQ.windowSize;
-	dataWindow = MQ.dataWindow;
-	return *this;
-}
-
 
 template<class T>
-MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ)
+MaxQuery<T>::MaxQuery()
 {
-	size = MQ.size;
-	index = MQ.index;
-	windowSize = MQ.windowSize;
-	dataWindow = std::move(MQ.dataWindow);
-}
-
-template<class T>
-bool MaxQuery<T>::checkDataValid(T data_)
-{
-
-	if (data_ <= max_value && data_ >= min_value)
-		return true;	
-	else 
-		return false;
-}
-
-
-
-
-template<class T>
-MaxQuery<T>::~MaxQuery()
-{
+	size = 0;
+	index = 0;
 	min_value = std::numeric_limits<T>::lowest();
 	max_value = std::numeric_limits<T>::max();
+	windowSize = WINDOWSIZE;
 }
 
-template<class T>
-MaxQuery<T>::MaxQuery(const MaxQuery<T>& MQ)
-{
-	size = MQ.size;
-	index = MQ.index;
-	windowSize = MQ.windowSize;
-	dataWindow = MQ.dataWindow;
-}
 
 template<class T>
 MaxQuery<T>::MaxQuery(int windowSize_)
@@ -106,29 +69,76 @@ MaxQuery<T>::MaxQuery(int windowSize_, T min_value_, T max_value_)
 	windowSize = windowSize_;
 }
 
+
 template<class T>
-MaxQuery<T>::MaxQuery()
+MaxQuery<T>::MaxQuery(const MaxQuery<T>& MQ)
 {
-	size = 0;
-	index = 0;
-	windowSize = WINDOWSIZE;
+	size = MQ.size;
+	index = MQ.index;
+	min_value = MQ.min_value;
+	max_value = MQ.max_value;
+	windowSize = MQ.windowSize;
+	dataWindow = MQ.dataWindow;
 }
+
+template<class T>
+MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ)
+{
+	size = MQ.size;
+	index = MQ.index;
+	min_value = MQ.min_value;
+	max_value = MQ.max_value;
+	windowSize = MQ.windowSize;
+	dataWindow = std::move(MQ.dataWindow);
+}
+
+
+template<class T>
+MaxQuery<T> & MaxQuery<T>:: operator=(const MaxQuery &MQ)
+{
+	size = MQ.size;
+	index = MQ.index;
+	min_value = MQ.min_value;
+	max_value = MQ.max_value;
+	windowSize = MQ.windowSize;
+	dataWindow = MQ.dataWindow;
+	return *this;
+}
+
+
+template<class T>
+bool MaxQuery<T>::checkDataValid(T data_)
+{
+
+	if (data_ <= max_value && data_ >= min_value)
+		return true;	
+	else 
+		return false;
+}
+
+
 
 template<class T>
 T MaxQuery<T>::addNewData(T value)
 {
-	index++;
+//	index++;
 	struct myData data;
 	data.value = value;
 	data.index = index;
+	int expiredIndex = index;
+	index = (index+1)%windowSize;   //circular index, avoid overflow
+
 	if (dataWindow.empty())
 	{
-		if (checkDataValid(value) == false)			//data invalid, no operation
+		if (checkDataValid(value) == false)			//data invalid, do not add add such data 
 			return std::numeric_limits<T>::lowest();
 		dataWindow.push_back(data);
 		return data.value;
 	}
-	if (dataWindow.front().index <= data.index - windowSize)
+/*	if (dataWindow.front().index <= data.index - windowSize)
+		dataWindow.pop_front();		// out of date
+*/
+	if (dataWindow.front().index == expiredIndex)
 		dataWindow.pop_front();		// out of date
 
 	if (checkDataValid(value) == false)			//data invalid, no operation
@@ -168,6 +178,14 @@ T MaxQuery<T>::update_with_new_value(T data)
 {
 	addNewData(data);
 	return getCurMax();
+}
+
+
+
+template<class T>
+MaxQuery<T>::~MaxQuery()
+{
+
 }
 
 
