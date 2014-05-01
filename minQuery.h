@@ -136,6 +136,13 @@ T MinQuery<T>::addNewData(T value)
 	int expiredIndex = index;
 	index = (index+1)%windowSize;   //circular index, avoid overflow
 
+
+	if (!(dataWindow.empty()))
+	{
+		if (dataWindow.front().index == expiredIndex)
+			dataWindow.pop_front();		// out of date
+	}
+
 	if (dataWindow.empty())
 	{
 		if (checkDataValid(value) == false)			//data invalid, no operation
