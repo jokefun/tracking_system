@@ -157,12 +157,38 @@ void MedianQuery<T>::deleteElement(int index)
 	if (size1 == 0)
 		return;
 	T value = cachedValue[index];
+
 	std::multimap<T, int>::iterator it = fhWindow.find(value);
 	if (it != fhWindow.end())
-		fhWindow.erase (it);
+	{
+		std::multimap<T, int>::iterator it1 = fhWindow.lower_bound(value);
+		std::multimap<T, int>::iterator it2 = fhWindow.upper_bound(value);
+		while (it1 != it2)
+		{ 
+			if (it1 != fhWindow.end() && (*it1).second != index)
+				std::advance (it1,1);
+			else
+				break;
+		}
+		if (it1 != fhWindow.end())
+			fhWindow.erase (it1);
+	}
 	it = shWindow.find(value);
 	if (it != shWindow.end())
-		shWindow.erase (it);  //at most one will succeed
+	{
+		std::multimap<T, int>::iterator it1 = shWindow.lower_bound(value);
+		std::multimap<T, int>::iterator it2 = shWindow.upper_bound(value);
+		while (it1 != it2)
+		{ 
+			
+			if (it1 != shWindow.end() &&(*it1).second != index)
+				std::advance (it1,1);
+			else
+				break;
+		}
+		if (it1 != shWindow.end())
+			shWindow.erase (it1);  //at most one will succeed
+	}
 	balanceWindow();
 	
 

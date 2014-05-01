@@ -158,6 +158,8 @@ bool doTest(vector<double>& examples, int window_size,
 void testData1(vector<double> &examples)
 {
 	examples.push_back(-3);
+	examples.push_back(-3);
+	examples.push_back(-3);
 	examples.push_back(-1);
 	examples.push_back(-2);
 	examples.push_back(-1.5);
@@ -168,6 +170,14 @@ void testData1(vector<double> &examples)
 	examples.push_back(0.9);
 	examples.push_back(0.8);
 	examples.push_back(0.7);
+	examples.push_back(0.6);
+	examples.push_back(0.6);
+	examples.push_back(0.6);
+	examples.push_back(0.7);
+	examples.push_back(0.6);
+	examples.push_back(0.6);
+	examples.push_back(0.8);
+	examples.push_back(0.6);
 	examples.push_back(0.6);
 }
 
