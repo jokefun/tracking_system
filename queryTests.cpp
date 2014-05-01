@@ -100,6 +100,11 @@ double testFunctionMin(vector<double>::iterator b, vector<double>::iterator e, d
 double testFunctionMedian(vector<double>::iterator b, vector<double>::iterator e, double min_value, double max_value)
 {
 	double median = std::numeric_limits< double >::max();
+	
+	std::vector<double> tmp(b,e+1);
+	std::partial_sort(tmp.begin(),tmp.end(), tmp.end());
+	b = tmp.begin();
+	e = std::prev(tmp.end());
 	vector<double>::iterator it = b;
 	int size = e - b;
 	if (size == 0)
@@ -110,7 +115,7 @@ double testFunctionMedian(vector<double>::iterator b, vector<double>::iterator e
 	}
 	else
 	{
-		median = *(it+size/2+1);
+		median = *(it+size/2);
 	}
 	return median;
 }
@@ -171,7 +176,7 @@ int main()
 {
     /* Query<double>* query[3]; */
     const int count=20;
-    const int window_size=3;
+    const int window_size=6;
 
     vector<double> examples;
 //    populateRandomExample(examples, count);
