@@ -1,5 +1,5 @@
-#ifndef AVERAGEQUERY_H_H
-#define AVERAGEQUERY_H_H
+#ifndef STANDARDDEVIATIONQUERY_H_INCLUDED
+#define STANDARDDEVIATIONQUERY_H_INCLUDED
 
 #include <deque>
 #include <limits>
@@ -11,34 +11,32 @@ const int WINDOW_WIDTH = 500;
 const double UPPERBOUND = numeric_limits<double>::max();
 const double LOWERBOUND = numeric_limits<double>::lowest();
 
-
-// You should try to document the requirements on class T
 template <class T>
-class AverageQuery:public Query<T>
+class StandardDeviationQuery:public Query<T>
 {
 private:
-	// This sum might overflow, right? How can you do the computation to guarantee the absence of overlow?
     T windowSum;
+    T windowSquareSum;
     int dataCnt;
     int windowWidth;
     T upperBound;
     T lowerBound;
     std::deque<T> curDataWindow;
-    int addDataToWindow(T newData);
-    T getAverage();
+    int addDataToWindowSTD(T newData);
+    T getStandardDeviation();
 public:
-    AverageQuery();
-    AverageQuery(int windowWidth_);
-    AverageQuery(int windowWidth_, T upperBound_, T lowerBound_);
-    ~AverageQuery();
+    StandardDeviationQuery();
+    StandardDeviationQuery(int windowWidth_);
+    StandardDeviationQuery(int windowWidth_, T upperBound_, T lowerBound_);
+    ~StandardDeviationQuery();
     T update_with_new_value(T newData);
 };
 
-
 template <class T>
-AverageQuery<T>::AverageQuery()
+StandardDeviationQuery<T>::StandardDeviationQuery()
 {
     windowSum = 0;
+    windowSquareSum = 0;
     dataCnt = 0;
     windowWidth = WINDOW_WIDTH;
     upperBound = UPPERBOUND;
@@ -46,40 +44,45 @@ AverageQuery<T>::AverageQuery()
 }
 
 template <class T>
-AverageQuery<T>::AverageQuery(int windowWidth_)
+StandardDeviationQuery<T>::StandardDeviationQuery(int windowWidth_)
 {
     windowSum = 0;
+    windowSquareSum = 0;
     dataCnt = 0;
     windowWidth = windowWidth_;
     upperBound = UPPERBOUND;
     lowerBound = LOWERBOUND;
+
 }
 
 template <class T>
-AverageQuery<T>::AverageQuery(int windowWidth_, T upperBound_, T lowerBound_)
+StandardDeviationQuery<T>::StandardDeviationQuery(int windowWidth_, T upperBound_, T lowerBound_)
 {
     windowSum = 0;
+    windowSquareSum = 0;
     dataCnt = 0;
     windowWidth = windowWidth_;
     upperBound = upperBound_;
     lowerBound = lowerBound_;
+
 }
 
-
 template <class T>
-AverageQuery<T>::~AverageQuery()
+StandardDeviationQuery<T>::~StandardDeviationQuery()
 {
+
 }
 
 
 template <class T>
-int AverageQuery<T>::addDataToWindow(T newData)
+int StandardDeviationQuery<T>::addDataToWindowSTD(T newData)
 {
     if(curDataWindow.size() >= windowWidth)
     {
         if ((curDataWindow.front() >= lowerBound) && (curDataWindow.front() <= upperBound))
         {
             windowSum -= curDataWindow.front();
+            windowSquareSum -= (curDataWindow.front() * curDataWindow.front());
             dataCnt -= 1;
         }
         curDataWindow.pop_front();
@@ -87,6 +90,7 @@ int AverageQuery<T>::addDataToWindow(T newData)
         if ((newData >= lowerBound) && (newData <= upperBound))
         {
             windowSum += newData;
+            windowSquareSum += (newData * newData);
             dataCnt += 1;
         }
     }
@@ -96,29 +100,35 @@ int AverageQuery<T>::addDataToWindow(T newData)
         if ((newData >= lowerBound) && (newData <= upperBound))
         {
             windowSum += newData;
+            windowSquareSum += (newData * newData);
             dataCnt += 1;
         }
     }
 
     return 1;
+
 }
 
+
 template<class T>
-T AverageQuery<T>::getAverage()
+T StandardDeviationQuery<T>::getStandardDeviation()
 {
     if (dataCnt >= 1)
     {
-        T ave = windowSum/dataCnt;
-        return ave;
+        T average_val = windowSum/dataCnt;
+        T standardDeviation = sqrt((windowSquareSum/dataCnt) - average_val*average_val);
+        return standardDeviation;
     }
     else return 0;
+
 }
 
 template<class T>
-T AverageQuery<T>::update_with_new_value(T newData)
+T StandardDeviationQuery<T>::update_with_new_value(T newData)
 {
-    addDataToWindow(newData);
-    return getAverage();
+    addDataToWindowSTD(newData);
+    return getStandardDeviation();
+
 }
 
 #endif

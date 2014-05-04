@@ -8,11 +8,12 @@
 #include "maxQuery.h"
 #include "minQuery.h"
 #include "averageQuery.h"
+#include "medianQuery.h"
 
 #define EPSILON_DOUBLE 0.00001
 
-double max_value;
-double min_value;
+double max_value = std::numeric_limits< double >::max();
+double min_value = std::numeric_limits< double >::lowest();
 
 using namespace std;
 
@@ -95,6 +96,31 @@ double testFunctionMin(vector<double>::iterator b, vector<double>::iterator e, d
 }
 
 
+
+double testFunctionMedian(vector<double>::iterator b, vector<double>::iterator e, double min_value, double max_value)
+{
+	double median = std::numeric_limits< double >::max();
+	
+	std::vector<double> tmp(b,e+1);
+	std::partial_sort(tmp.begin(),tmp.end(), tmp.end());
+	b = tmp.begin();
+	e = std::prev(tmp.end());
+	vector<double>::iterator it = b;
+	int size = e - b;
+	if (size == 0)
+		median = *it;
+	else if (size % 2 == 1)
+	{
+		median = (*(it+size/2) + (*(it+size/2+1)))/2;
+	}
+	else
+	{
+		median = *(it+size/2);
+	}
+	return median;
+}
+
+
 /*
  * run over examples using query and testFunction
  * to test whether query works as expected
@@ -132,6 +158,8 @@ bool doTest(vector<double>& examples, int window_size,
 void testData1(vector<double> &examples)
 {
 	examples.push_back(-3);
+	examples.push_back(-3);
+	examples.push_back(-3);
 	examples.push_back(-1);
 	examples.push_back(-2);
 	examples.push_back(-1.5);
@@ -143,6 +171,14 @@ void testData1(vector<double> &examples)
 	examples.push_back(0.8);
 	examples.push_back(0.7);
 	examples.push_back(0.6);
+	examples.push_back(0.6);
+	examples.push_back(0.6);
+	examples.push_back(0.7);
+	examples.push_back(0.6);
+	examples.push_back(0.6);
+	examples.push_back(0.8);
+	examples.push_back(0.6);
+	examples.push_back(0.6);
 }
 
 
@@ -150,30 +186,40 @@ int main()
 {
     /* Query<double>* query[3]; */
     const int count=20;
-    const int window_size=4;
+    const int window_size=6;
 
     vector<double> examples;
 //    populateRandomExample(examples, count);
 	testData1(examples);
     print(examples);
 
-	min_value = -2;
-	max_value = 2;
 
-     MaxQuery<double> query(window_size, min_value, max_value); 
-	 MinQuery<double> min_query(window_size, min_value, max_value); 
 
+ //    MaxQuery<double> query(window_size, min_value, max_value); 
+//	 MinQuery<double> min_query(window_size, min_value, max_value); 
+
+	 MaxQuery<double> query(window_size); 
+	 MinQuery<double> min_query(window_size); 
+	 MedianQuery<double> med_query(window_size);
  //   AverageQuery<double> query(window_size);
 	
-	cout<<"test MaxQuery"<<endl;
+	
+
+
+	
+
+
+
+	cout<<"window size"<<window_size<<endl;
 	cout<<"minvalue:"<<min_value<<" maxvalue"<<max_value<<endl;
+	cout<<"test MaxQuery"<<endl;
 	if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionMax))
 	{
 		cout << "test failed\n";
 	}
 	else
 	{
-		cout << "test passed\n";
+		cout << "test passed\n"<<endl;
 	}
 	cout<<"test MinQuery"<<endl;
 	if (!doTest(examples, window_size, (Query<double>*)&min_query, &testFunctionMin))
@@ -182,8 +228,20 @@ int main()
 	}
 	else
 	{
+		cout << "test passed\n"<<endl;
+	}
+	cout<<"test Median"<<endl;
+	if (!doTest(examples, window_size, (Query<double>*)&med_query, &testFunctionMedian))
+	{
+		cout << "test failed\n";
+	}
+	else
+	{
 		cout << "test passed\n";
 	}
+
+//	MaxQuery<double> querytest(std::move(query));
+
 	/*
     if (!doTest(examples, window_size, (Query<double>*)&query, &testFunctionAverage))
     {
