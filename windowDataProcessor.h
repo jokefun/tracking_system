@@ -94,6 +94,15 @@ class WindowDataProcessor
         vector<double> getLastAll();
 
         /*
+         * get one of the result for custom queries
+         * i starts from 0
+         * will return 0 if out of range
+         */
+        double getLastCustom(size_t i);
+
+        void addCustomQuery(shared_ptr<Query<double> >);
+
+        /*
          * call to add new data and get corresponding result as well
          */
         double addNewDataAndGetAverage(double);

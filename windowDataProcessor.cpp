@@ -45,14 +45,11 @@ void WindowDataProcessor::initQueries()
      */
 
     // average
-    queries.push_back(unique_ptr<Query<double> >(new AverageQuery<double>(window_size)));
-    lastValues.push_back(0);
+    queries.push_back(shared_ptr<Query<double> >(new AverageQuery<double>(window_size)));
     // max
-    queries.push_back(unique_ptr<Query<double> >(new MaxQuery<double>(window_size)));
-    lastValues.push_back(0);
+    queries.push_back(shared_ptr<Query<double> >(new MaxQuery<double>(window_size)));
     // min
-    queries.push_back(unique_ptr<Query<double> >(new MinQuery<double>(window_size)));
-    lastValues.push_back(0);
+    queries.push_back(shared_ptr<Query<double> >(new MinQuery<double>(window_size)));
     // maybe more
 
     customQueries_count = 0;
@@ -66,13 +63,24 @@ void WindowDataProcessor::executeAllQueriesForData(double v)
      *            ds.last = {v, lastValues[...]}
      */
     lastInput = v;
-    vector<double> vt;
-    vt.push_back(v);
+    lastValues.clear();
+
+    // for default queries
     for (int i=0; i<NUM_OF_QUERYTYPES; i++)
     {
-        lastValues[i] = queries[i]->update_with_new_value(v);
-        vt.push_back(lastValues[i]);
+        lastValues.push_back(queries[i]->update_with_new_value(v));
     }
+
+    // for custom queries
+    for (int i=0; i<customQueries_count; i++)
+    {
+        lastValues.push_back(customQueries[i]->update_with_new_value(v));
+    }
+
+    // save to storage
+    vector<double> vt(lastValues);
+    vt.push_back(v);
+
     ds.addNewData(vt);
 }
 
@@ -99,6 +107,27 @@ double WindowDataProcessor::getLastMin()
 vector<double> WindowDataProcessor::getLastAll()
 {
     return lastValues;
+}
+
+double WindowDataProcessor::getLastCustom(size_t i)
+{
+    if (i < customQueries_count)
+    {
+        return lastValues[NUM_OF_QUERYTYPES+i];
+    }
+    else
+    {
+        cout << "error: getLastCustom, index out of range\n";
+        return 0;
+    }
+}
+
+void WindowDataProcessor::addCustomQuery(shared_ptr<Query<double> > q)
+{
+    // add ptr to vector
+    customQueries.push_back(q);
+    // +1 to count to preserve invariant
+    customQueries_count++;
 }
 
 double WindowDataProcessor::addNewDataAndGetAverage(double v)

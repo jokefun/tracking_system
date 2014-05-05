@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "windowDataProcessor.h"
+#include "averageQuery.h"
 
 #define EPSILON_DOUBLE 0.00001
 
@@ -75,6 +76,8 @@ bool doTest(vector<double>& examples, int window_size,
         WindowDataProcessor& processor)
 {
 
+    // testing custom queries
+    processor.addCustomQuery(shared_ptr<Query<double> >(new AverageQuery<double>(window_size)));
 
     for (vector<double>::iterator i=examples.begin(); i!=examples.end(); ++i)
     {
@@ -103,6 +106,14 @@ bool doTest(vector<double>& examples, int window_size,
         if (abs(processor.getLastMin()-fromTestFuncMin) > EPSILON_DOUBLE)
         {
             printWhenTestError("Error in min --- ",b,i,processor.getLastMin(),fromTestFuncMin);
+            return false;
+        }
+
+        // testing custom queries
+        double fromTestFuncCustom_Average = testFunctionAverage(b, i);
+        if (abs(processor.getLastCustom(0)-fromTestFuncAverage) > EPSILON_DOUBLE)
+        {
+            printWhenTestError("Error in Custom_average --- ",b,i,processor.getLastCustom(0),fromTestFuncAverage);
             return false;
         }
     }
