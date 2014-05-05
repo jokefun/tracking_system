@@ -20,6 +20,8 @@ WindowDataProcessor& WindowDataProcessor::operator =(const WindowDataProcessor& 
     queries = wdp.queries;
     lastInput = wdp.lastInput;
     lastValues = wdp.lastValues;
+    customQueries = wdp.customQueries;
+    customQueries_count = wdp.customQueries_count;
     return *this;
 }
 
@@ -30,6 +32,8 @@ WindowDataProcessor& WindowDataProcessor::operator =(WindowDataProcessor&& wdp)
     queries = move(wdp.queries);
     lastInput = move(wdp.lastInput);
     lastValues = move(wdp.lastValues);
+    customQueries = move(wdp.customQueries);
+    customQueries_count = move(wdp.customQueries_count);
     return *this;
 }
 
@@ -50,6 +54,8 @@ void WindowDataProcessor::initQueries()
     queries.push_back(unique_ptr<Query<double> >(new MinQuery<double>(window_size)));
     lastValues.push_back(0);
     // maybe more
+
+    customQueries_count = 0;
 }
 
 void WindowDataProcessor::executeAllQueriesForData(double v)

@@ -26,7 +26,9 @@ class WindowDataProcessor
         vector<shared_ptr<Query<double> > > queries;
 
         // temp statistics
-        /* \A QueryType qt ==> lastValues[qt] == queries.updateWithValue[qt](lastInput) */
+        /* \A QueryType qt ==> lastValues[qt] == queries[qt].updateWithValue(lastInput) */
+        /* \A size_t t: 0<=t<customQueries_count ==>
+            lastInput[t+NUM_OF_QUERYTYPES] == customQueries[t].updateWithValue(lastInput) */
         double lastInput;
         vector<double> lastValues;
 
@@ -37,6 +39,11 @@ class WindowDataProcessor
             MIN,
             NUM_OF_QUERYTYPES
         };
+
+        // custom queries
+        /* customQueries.size() == customQueries_count */
+        vector<shared_ptr<Query<double> > > customQueries;
+        size_t customQueries_count;
 
         // storage
         DataStorage ds;
@@ -54,14 +61,18 @@ class WindowDataProcessor
             ds(window_size, NUM_OF_QUERYTYPES),
             queries(wdp.queries),
             lastInput(wdp.lastInput),
-            lastValues(wdp.lastValues) {}
+            lastValues(wdp.lastValues),
+            customQueries(wdp.customQueries),
+            customQueries_count(wdp.customQueries_count) {}
         // move
         WindowDataProcessor(WindowDataProcessor&& wdp) :
             window_size(move(wdp.window_size)),
             ds(window_size, NUM_OF_QUERYTYPES),
             queries(move(wdp.queries)),
             lastInput(move(wdp.lastInput)),
-            lastValues(move(wdp.lastValues)) {}
+            lastValues(move(wdp.lastValues)),
+            customQueries(move(wdp.customQueries)),
+            customQueries_count(move(wdp.customQueries_count)) {}
 
         ~WindowDataProcessor() {} // release queries
 
