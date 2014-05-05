@@ -26,6 +26,7 @@ class WindowDataProcessor
         vector<shared_ptr<Query<double> > > queries;
 
         // temp statistics
+        /* \A QueryType qt ==> lastValues[qt] == queries.updateWithValue[qt](lastInput) */
         double lastInput;
         vector<double> lastValues;
 

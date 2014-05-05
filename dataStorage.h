@@ -40,9 +40,9 @@ class DataStorage
 
         // member variables
         size_t window_size;
-        size_t number_statistics;
+        size_t number_statistics; // the number of statistics stored (avg, max, ...)
         vector<DataWithTime> current_window;
-        vector<DataWithTime> write_buffer_database;
+        vector<DataWithTime> write_buffer_database; // data popped from current_window
 
     public:
         // constructors
