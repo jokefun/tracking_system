@@ -82,6 +82,21 @@ vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
 
     if (s >= e) return retriveResult;
 
+    // for data outside window
+    if (!write_buffer_database.empty() &&
+            write_buffer_database.back().timestamp >= s && write_buffer_database.front().timestamp <= e)
+    {
+        vector<DataWithTime>::iterator left = write_buffer_database.begin();
+        while (left!=write_buffer_database.end() && (*left).timestamp<s) left++;
+
+        vector<DataWithTime>::iterator right = write_buffer_database.end();
+        right--; // start from end--
+        while (right>=write_buffer_database.begin() && (*right).timestamp>e) right--;
+
+        for (vector<DataWithTime>::iterator i=left; i<=right; i++)
+            retriveResult.push_back((*i).data);
+    }
+
     // for data inside window
     if (!current_window.empty() &&
             current_window.back().timestamp >= s && current_window.front().timestamp <= e)
@@ -92,21 +107,6 @@ vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
         vector<DataWithTime>::iterator right = current_window.end();
         right--; // start from end--
         while (right>=current_window.begin() && (*right).timestamp>e) right--;
-
-        for (vector<DataWithTime>::iterator i=left; i<=right; i++)
-            retriveResult.push_back((*i).data);
-    }
-
-    // for data inside window
-    if (!write_buffer_database.empty() &&
-            write_buffer_database.back().timestamp >= s && write_buffer_database.front().timestamp <= e)
-    {
-        vector<DataWithTime>::iterator left = write_buffer_database.begin();
-        while (left!=write_buffer_database.end() && (*left).timestamp<s) left++;
-
-        vector<DataWithTime>::iterator right = write_buffer_database.end();
-        right--; // start from end--
-        while (right>=write_buffer_database.begin() && (*right).timestamp>e) right--;
 
         for (vector<DataWithTime>::iterator i=left; i<=right; i++)
             retriveResult.push_back((*i).data);
