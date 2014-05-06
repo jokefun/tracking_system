@@ -90,17 +90,17 @@ class WindowDataProcessor
         /*
          * call to get the results for last input data
          */
-        double getLastAverage();
-        double getLastMax();
-        double getLastMin();
-        vector<double> getLastAll();
+        double getLastAverage() const;
+        double getLastMax() const;
+        double getLastMin() const;
+        vector<double> getLastAll() const;
 
         /*
          * get one of the result for custom queries
          * i starts from 0
          * will return 0 if out of range
          */
-        double getLastCustom(size_t i);
+        double getLastCustom(size_t i) const;
 
         void addCustomQuery(shared_ptr<Query<double> >);
 
@@ -115,7 +115,7 @@ class WindowDataProcessor
         /*
          * query in data storage for datas in given period
          */
-        vector<vector<double> > retrieveData(string start, string end);
-        vector<vector<double> > retrieveData(time_point s, time_point e);
+        vector<vector<double> > retrieveData(string start, string end) const;
+        vector<vector<double> > retrieveData(time_point s, time_point e) const;
 };
 /* #endif */

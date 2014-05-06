@@ -89,27 +89,27 @@ void WindowDataProcessor::addNewData(double v)
     executeAllQueriesForData(v);
 }
 
-double WindowDataProcessor::getLastAverage()
+double WindowDataProcessor::getLastAverage() const
 {
     return lastValues[AVERAGE];
 }
 
-double WindowDataProcessor::getLastMax()
+double WindowDataProcessor::getLastMax() const
 {
     return lastValues[MAX];
 }
 
-double WindowDataProcessor::getLastMin()
+double WindowDataProcessor::getLastMin() const
 {
     return lastValues[MIN];
 }
 
-vector<double> WindowDataProcessor::getLastAll()
+vector<double> WindowDataProcessor::getLastAll() const
 {
     return lastValues;
 }
 
-double WindowDataProcessor::getLastCustom(size_t i)
+double WindowDataProcessor::getLastCustom(size_t i) const
 {
     if (i < customQueries_count)
     {
@@ -154,12 +154,12 @@ vector<double> WindowDataProcessor::addNewDataAndGetAll(double v)
     return lastValues;
 }
 
-vector<vector<double> > WindowDataProcessor::retrieveData(string start, string end)
+vector<vector<double> > WindowDataProcessor::retrieveData(string start, string end) const
 {
     return ds.retrieveData(start, end);
 }
 
-vector<vector<double> > WindowDataProcessor::retrieveData(time_point s, time_point e)
+vector<vector<double> > WindowDataProcessor::retrieveData(time_point s, time_point e) const
 {
     return ds.retrieveData(s, e);
 }
