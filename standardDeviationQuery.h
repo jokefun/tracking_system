@@ -1,5 +1,7 @@
-#ifndef STANDARDDEVIATIONQUERY_H_INCLUDED
-#define STANDARDDEVIATIONQUERY_H_INCLUDED
+#pragma once
+
+/* #ifndef STANDARDDEVIATIONQUERY_H_INCLUDED */
+/* #define STANDARDDEVIATIONQUERY_H_INCLUDED */
 
 #include <deque>
 #include <limits>
@@ -131,4 +133,4 @@ T StandardDeviationQuery<T>::update_with_new_value(T newData)
 
 }
 
-#endif
+/* #endif */

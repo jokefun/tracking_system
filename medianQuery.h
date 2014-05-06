@@ -1,5 +1,7 @@
-#ifndef MEDIANQUERY_H_H
-#define MEDIANQUERY_H_H
+#pragma once
+
+/* #ifndef MEDIANQUERY_H_H */
+/* #define MEDIANQUERY_H_H */
 
 #include "query.h"
 #include <map>
@@ -276,4 +278,4 @@ MedianQuery<T>::~MedianQuery()
 		delete []cachedValue;
 }
 
-#endif
+/* #endif */

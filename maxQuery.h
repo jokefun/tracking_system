@@ -1,5 +1,7 @@
-#ifndef MAXQUERY_H_H
-#define MAXQUERY_H_H
+#pragma once
+
+/* #ifndef MAXQUERY_H_H */
+/* #define MAXQUERY_H_H */
 
 #include "query.h"
 #include <deque>          // std::queue
@@ -223,4 +225,4 @@ MaxQuery<T>::~MaxQuery()
 }
 
 
-#endif
+/* #endif */

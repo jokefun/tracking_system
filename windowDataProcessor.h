@@ -1,5 +1,7 @@
-#ifndef DATAPROCESSOR_D
-#define DATAPROCESSOR_D
+#pragma once
+
+/* #ifndef DATAPROCESSOR_D */
+/* #define DATAPROCESSOR_D */
 
 #include <iostream>
 #include <memory>
@@ -116,4 +118,4 @@ class WindowDataProcessor
         vector<vector<double> > retrieveData(string start, string end);
         vector<vector<double> > retrieveData(time_point s, time_point e);
 };
-#endif
+/* #endif */

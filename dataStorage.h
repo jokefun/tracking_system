@@ -1,5 +1,6 @@
-#ifndef DATASTORAGE_D
-#define DATASTORAGE_D
+#pragma once
+/* #ifndef DATASTORAGE_D */
+/* #define DATASTORAGE_D */
 
 #include <iostream>
 #include <vector>
@@ -90,4 +91,4 @@ class DataStorage
 };
 
 
-#endif
+/* #endif */

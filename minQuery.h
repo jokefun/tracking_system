@@ -1,5 +1,7 @@
-#ifndef MINQUERY_H_H
-#define MINQUERY_H_H
+#pragma once
+
+/* #ifndef MINQUERY_H_H */
+/* #define MINQUERY_H_H */
 
 #include "query.h"
 #include <deque>          // std::queue
@@ -193,4 +195,4 @@ T MinQuery<T>::update_with_new_value(T data)
 }
 
 
-#endif
+/* #endif */

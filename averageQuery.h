@@ -1,5 +1,6 @@
-#ifndef AVERAGEQUERY_H_H
-#define AVERAGEQUERY_H_H
+#pragma once
+/* #ifndef AVERAGEQUERY_H_H */
+/* #define AVERAGEQUERY_H_H */
 
 #include <deque>
 #include <limits>
@@ -121,4 +122,4 @@ T AverageQuery<T>::update_with_new_value(T newData)
     return getAverage();
 }
 
-#endif
+/* #endif */
