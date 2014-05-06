@@ -186,7 +186,7 @@ int main()
 {
     /* Query<double>* query[3]; */
     const int count=20;
-    const int window_size=6;
+    const int window_size=5;
 
     vector<double> examples;
 //    populateRandomExample(examples, count);

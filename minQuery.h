@@ -7,7 +7,7 @@
 #include <deque>          // std::queue
 
 //default window size, if not specified
-const int MINQUERY_WINDOWSIZE = 500;	
+//const int MINQUERY_WINDOWSIZE = 500;	
 
 
 /*
@@ -29,21 +29,21 @@ class MinQuery:public Query<T>
 		struct myData
 		{
 			T value;
-			int index;
+			size_t index;
 		};
-		int size;
-		int index;
+		size_t size;
+		size_t index;
 		T min_value;
 		T max_value;
 		std::deque<myData> dataWindow;
-		int windowSize;
+		size_t windowSize;
 		T addNewData(T data_);
 		bool checkDataValid(T data_);
 		T getCurMin();
 	public:
-		MinQuery();
-		MinQuery(int windowSize_);
-		MinQuery(int windowSize_, T min_value_, T max_value);
+//		MinQuery();
+		MinQuery(size_t windowSize_ = 500);
+		MinQuery(T min_value_, T max_value, size_t windowSize_ = 500);
 		MinQuery(const MinQuery<T>& MQ);
 		MinQuery(MinQuery<T>&& MQ);
 		~MinQuery();
@@ -101,7 +101,7 @@ MinQuery<T>::MinQuery(const MinQuery<T>& MQ)
 }
 
 template<class T>
-MinQuery<T>::MinQuery(int windowSize_)
+MinQuery<T>::MinQuery(size_t windowSize_ = 500)
 {
 	size = 0;
 	index = 0;
@@ -111,7 +111,7 @@ MinQuery<T>::MinQuery(int windowSize_)
 }
 
 template<class T>
-MinQuery<T>::MinQuery(int windowSize_, T min_value_, T max_value_)
+MinQuery<T>::MinQuery(T min_value_, T max_value_, size_t windowSize_)
 {
 	size = 0;
 	index = 0;
@@ -120,6 +120,7 @@ MinQuery<T>::MinQuery(int windowSize_, T min_value_, T max_value_)
 	windowSize = windowSize_;
 }
 
+/*
 template<class T>
 MinQuery<T>::MinQuery()
 {
@@ -127,6 +128,7 @@ MinQuery<T>::MinQuery()
 	index = 0;
 	windowSize = MINQUERY_WINDOWSIZE;
 }
+*/
 
 template<class T>
 T MinQuery<T>::addNewData(T value)
@@ -135,7 +137,7 @@ T MinQuery<T>::addNewData(T value)
 	struct myData data;
 	data.value = value;
 	data.index = index;
-	int expiredIndex = index;
+	size_t expiredIndex = index;
 	index = (index+1)%windowSize;   //circular index, avoid overflow
 
 
@@ -158,6 +160,14 @@ T MinQuery<T>::addNewData(T value)
 	if (checkDataValid(value) == false)			//data invalid, no operation
 		return std::numeric_limits<T>::max();
 
+	while ((!dataWindow.empty()) && (dataWindow.back().value > data.value))
+	{
+		dataWindow.pop_back();
+	}
+	dataWindow.push_back(data);
+	return data.value;
+
+	/*
 	if (dataWindow.front().value <= data.value)		
 	{
 		while (dataWindow.back().value > data.value)
@@ -173,6 +183,7 @@ T MinQuery<T>::addNewData(T value)
 		dataWindow.push_back(data);
 	}
 	return data.value;
+	*/
 }
 
 template<class T>

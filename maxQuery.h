@@ -10,7 +10,7 @@
 // ALso, since this constant is specific to MaxQuery, it should be a static const member or MaxQuery
 // Note that such members are usually not made all caps in C++
 //default window size, if not specified
-const int WINDOWSIZE = 500;
+const size_t WINDOWSIZE = 500;       // default window size, when uesr do not specify window size.
 
 // Note that if you paramaterize the class by an ordering relation, this class can provide both maximum and minimum queries.
 
@@ -35,23 +35,23 @@ class MaxQuery:public Query<T>
 		{
 			T value;
 			// why are your indices ints? e.g. why are they signed?
-			int index;
+			size_t index;
 		};
-		int size;
-		int index;
+		size_t size;
+		size_t index;
 		T min_value;
 		T max_value;
 		// document your class invariant, i.e. the invariant describing how dataWindow summarizes the data in the window
 		std::deque<myData> dataWindow;
 		// why is this an int instead of a size_t?
-		int windowSize;
+		size_t windowSize;
 		T addNewData(T data_);
 		bool checkDataValid(T data_);
 		T getCurMax();
 	public:
-		MaxQuery();
-		MaxQuery(int windowSize_);		
-		MaxQuery(int windowSize_, T min_value_, T max_value);
+	//	MaxQuery();
+		MaxQuery(size_t windowSize_ = 500);			//set window size = 500 when uesr do not specify window size.
+		MaxQuery(T min_value_, T max_value, size_t windowSize_ = 500);
 		MaxQuery(const MaxQuery<T>& MQ);
 		MaxQuery(MaxQuery<T>&& MQ);
 		~MaxQuery();
@@ -60,7 +60,7 @@ class MaxQuery:public Query<T>
 
 };
 
-
+/*
 template<class T>
 MaxQuery<T>::MaxQuery()
 {
@@ -70,10 +70,10 @@ MaxQuery<T>::MaxQuery()
 	max_value = std::numeric_limits<T>::max();
 	windowSize = WINDOWSIZE;
 }
-
+*/
 
 template<class T>
-MaxQuery<T>::MaxQuery(int windowSize_)
+MaxQuery<T>::MaxQuery(size_t windowSize_)
 {
 	size = 0;
 	index = 0;
@@ -83,7 +83,7 @@ MaxQuery<T>::MaxQuery(int windowSize_)
 }
 
 template<class T>
-MaxQuery<T>::MaxQuery(int windowSize_, T min_value_, T max_value_)
+MaxQuery<T>::MaxQuery(T min_value_, T max_value_, size_t windowSize_)
 {
 	size = 0;
 	index = 0;
@@ -153,7 +153,7 @@ T MaxQuery<T>::addNewData(T value)
 	struct myData data;
 	data.value = value;
 	data.index = index;
-	int expiredIndex = index;
+	size_t expiredIndex = index;
 	index = (index+1)%windowSize;   //circular index, avoid overflow
 
 	if (!(dataWindow.empty()))
@@ -179,7 +179,14 @@ T MaxQuery<T>::addNewData(T value)
 
 	if (checkDataValid(value) == false)			//data invalid, no operation
 		return std::numeric_limits<T>::lowest();
-
+	
+	while ((!dataWindow.empty()) && (dataWindow.back().value < data.value))
+	{
+		dataWindow.pop_back();
+	}
+	dataWindow.push_back(data);
+	return data.value;
+/*
 	if (dataWindow.front().value >= data.value)
 	{
 		while (dataWindow.back().value < data.value)
@@ -195,6 +202,7 @@ T MaxQuery<T>::addNewData(T value)
 		dataWindow.push_back(data);
 	}
 	return data.value;
+*/
 }
 
 template<class T>
