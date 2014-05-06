@@ -61,7 +61,7 @@ void DataStorage::addNewData(vector<double> d, time_point t)
     /* } */
 }
 
-vector<vector<double> > DataStorage::retrieveData(string start, string end)
+vector<vector<double> > DataStorage::retrieveData(string start, string end) const
 {
     /*
      * parse time strings
@@ -72,7 +72,7 @@ vector<vector<double> > DataStorage::retrieveData(string start, string end)
     return retrieveData(s, e);
 }
 
-vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
+vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e) const
 {
     /*
      * search in both the window and the buffer for data between
@@ -86,14 +86,14 @@ vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
     if (!write_buffer_database.empty() &&
             write_buffer_database.back().timestamp >= s && write_buffer_database.front().timestamp <= e)
     {
-        vector<DataWithTime>::iterator left = write_buffer_database.begin();
+        vector<DataWithTime>::const_iterator left = write_buffer_database.begin();
         while (left!=write_buffer_database.end() && (*left).timestamp<s) left++;
 
-        vector<DataWithTime>::iterator right = write_buffer_database.end();
+        vector<DataWithTime>::const_iterator right = write_buffer_database.end();
         right--; // start from end--
         while (right>=write_buffer_database.begin() && (*right).timestamp>e) right--;
 
-        for (vector<DataWithTime>::iterator i=left; i<=right; i++)
+        for (vector<DataWithTime>::const_iterator i=left; i<=right; i++)
             retriveResult.push_back((*i).data);
     }
 
@@ -101,14 +101,14 @@ vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
     if (!current_window.empty() &&
             current_window.back().timestamp >= s && current_window.front().timestamp <= e)
     {
-        vector<DataWithTime>::iterator left = current_window.begin();
+        vector<DataWithTime>::const_iterator left = current_window.begin();
         while (left!=current_window.end() && (*left).timestamp<s) left++;
 
-        vector<DataWithTime>::iterator right = current_window.end();
+        vector<DataWithTime>::const_iterator right = current_window.end();
         right--; // start from end--
         while (right>=current_window.begin() && (*right).timestamp>e) right--;
 
-        for (vector<DataWithTime>::iterator i=left; i<=right; i++)
+        for (vector<DataWithTime>::const_iterator i=left; i<=right; i++)
             retriveResult.push_back((*i).data);
     }
 
@@ -118,7 +118,7 @@ vector<vector<double> > DataStorage::retrieveData(time_point s, time_point e)
     return retriveResult;
 }
 
-time_point DataStorage::stringToTimePoint(string ts)
+time_point DataStorage::stringToTimePoint(string ts) const
 {
     struct tm t;
     strptime(ts.c_str(), "%H:%M:%S %m/%d/%Y", &t);

@@ -82,11 +82,11 @@ class DataStorage
          * call to retrive data given time period
          * input can be string or time struct
          */
-        vector<vector<double> > retrieveData(string start, string end);
-        vector<vector<double> > retrieveData(time_point s, time_point e);
+        vector<vector<double> > retrieveData(string start, string end) const;
+        vector<vector<double> > retrieveData(time_point s, time_point e) const;
 
     private:
-        time_point stringToTimePoint(string ts);
+        time_point stringToTimePoint(string ts) const;
         void addNewData(vector<double> d, time_point t);
 };
 
