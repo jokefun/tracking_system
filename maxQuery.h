@@ -10,7 +10,7 @@
 // ALso, since this constant is specific to MaxQuery, it should be a static const member or MaxQuery
 // Note that such members are usually not made all caps in C++
 //default window size, if not specified
-const size_t WINDOWSIZE = 500;       // default window size, when uesr do not specify window size.
+//const size_t WINDOWSIZE = 500;       // default window size, when uesr do not specify window size.
 
 // Note that if you paramaterize the class by an ordering relation, this class can provide both maximum and minimum queries.
 
@@ -30,6 +30,15 @@ template <class T>
 class MaxQuery:public Query<T>
 {
 	//document your class members; I have no idea what they mean
+	/*
+	myData used to store incoming data with it corresponding timestamp(index)
+	min_value used to specify the minimum value this window accepts.
+	max_value used to specify the maximum value this window accepts.
+	index is used to specify the current slot in window to store new data.
+	dataWindow is a queue for holding the data in the sliding window.
+	windowSize specifies the window size.
+	
+	*/
 	private:
 		struct myData
 		{
@@ -37,11 +46,15 @@ class MaxQuery:public Query<T>
 			// why are your indices ints? e.g. why are they signed?
 			size_t index;
 		};
-		size_t size;
 		size_t index;
 		T min_value;
 		T max_value;
 		// document your class invariant, i.e. the invariant describing how dataWindow summarizes the data in the window
+		/*
+		_(invariant (dataWindow.size <= windowSize)
+	    _(invariant (\A size_t i, j : i <= j <= windowSize: dataWindow[i].value >= dataWindow[j].value ) 
+		(let dataWindow[0] denote the head of the dataWindow.)
+		*/
 		std::deque<myData> dataWindow;
 		// why is this an int instead of a size_t?
 		size_t windowSize;
@@ -75,7 +88,6 @@ MaxQuery<T>::MaxQuery()
 template<class T>
 MaxQuery<T>::MaxQuery(size_t windowSize_)
 {
-	size = 0;
 	index = 0;
 	min_value = std::numeric_limits<T>::lowest();
 	max_value = std::numeric_limits<T>::max();
@@ -85,7 +97,6 @@ MaxQuery<T>::MaxQuery(size_t windowSize_)
 template<class T>
 MaxQuery<T>::MaxQuery(T min_value_, T max_value_, size_t windowSize_)
 {
-	size = 0;
 	index = 0;
 	min_value = min_value_;
 	max_value = max_value_;
@@ -96,7 +107,6 @@ MaxQuery<T>::MaxQuery(T min_value_, T max_value_, size_t windowSize_)
 template<class T>
 MaxQuery<T>::MaxQuery(const MaxQuery<T>& MQ)
 {
-	size = MQ.size;
 	index = MQ.index;
 	min_value = MQ.min_value;
 	max_value = MQ.max_value;
@@ -106,7 +116,7 @@ MaxQuery<T>::MaxQuery(const MaxQuery<T>& MQ)
 
 template<class T>
 MaxQuery<T>::MaxQuery(MaxQuery<T>&& MQ):
-size(MQ.size),index(MQ.index),min_value(MQ.min_value),max_value(MQ.max_value),windowSize(MQ.windowSize),dataWindow(std::move(MQ.dataWindow))
+index(MQ.index),min_value(MQ.min_value),max_value(MQ.max_value),windowSize(MQ.windowSize),dataWindow(std::move(MQ.dataWindow))
 {
 //	cout<<"move constructor"<<endl;
 	/*
@@ -123,7 +133,6 @@ size(MQ.size),index(MQ.index),min_value(MQ.min_value),max_value(MQ.max_value),wi
 template<class T>
 MaxQuery<T> & MaxQuery<T>:: operator=(const MaxQuery &MQ)
 {
-	size = MQ.size;
 	index = MQ.index;
 	min_value = MQ.min_value;
 	max_value = MQ.max_value;
